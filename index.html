@@ -5,20 +5,60 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shopping List</title>
+    <link rel="stylesheet" href="./src/styles.css">
 </head>
 <body>
     <h1>My shopping list</h1>
     <section class="hero">
-        <ul class="list">
+        <ul class="list container">
             <li class="list--item">
                 <span>1</span>
-                <div>
-                    <p>My product</p>4
+                <div class="item--draggable" draggable="true">
+                    <p>My product</p>
+                    <p>$5</p>
+                    <span>...</span>
+                </div class="item--draggable" draggable="true">
+            </li>
+            <li class="list--item">
+                <span>2</span>
+                <div class="item--draggable" draggable="true">
+                    <p>My product</p>
+                    <p>$5</p>
+                    <span>...</span>
+                </div class="item--draggable" draggable="true">
+            </li>
+            <li class="list--item">
+                <span>3</span>
+                <div class="item--draggable" draggable="true">
+                    <p>My product</p>
+                    <p>$5</p>
+                    <span>...</span>
+                </div class="item--draggable" draggable="true">
+            </li>
+            <li class="list--item">
+                <span>4</span>
+                <div class="item--draggable" draggable="true">
+                    <p>My product</p>
+                    <p>$5</p>
+                    <span>...</span>
+                </div class="item--draggable" draggable="true">
+            </li>
+            <li class="list--item">
+                <span>5</span>
+                <div class="item--draggable" draggable="true">
+                    <p>My product</p>
                     <p>$5</p>
                     <span>...</span>
                 </div>
             </li>
         </ul>
+        <form class="container">
+            <label for="name">Product name</label>
+            <input type="text" id="name" placeholder="Search your product">
+            <label for="price">Product price</label>
+            <input type="text" id="price" placeholder="Search your product price">
+            <button type="submit">Add product</button>
+        </form>
     </section>
 </body>
 </html>
