@@ -2,75 +2,133 @@
 const form = document.querySelector("#form");
 const button = document.querySelector("#submit-button");
 const list  = document.querySelector("#list");
+const onlineList = document.querySelector("#online-list");
+const localButton = document.querySelector("#local-button");
 const price = form.price;
 const name = form.name;
 
-const productList = [];
+let productList;
+
+if (getLocalStorage()) {
+    productList  = localStorage();
+} else {
+    productList = [];
+}
+
 const nodesItem = [];
+const onlineListArray = [];
+
+let startPosition;
+let finalPosition;
 
 form.addEventListener("submit", (event) => {
     event.preventDefault();
     productList.push({ name: name.value, price: price.value });
-    createItem(name.value, price.value); 
+    createItem(name.value, price.value, list, nodesItem); 
     cleanInputs();
 });
 
-function cleanInputs(){
-    price.value = ""
-    name.value = ""
+function getLocalStorage() {
+    let obj = JSON.parse(window.localStorage.getItem("local"));
+    console.log(obj);
+    return obj;
 }
 
-function createItem(name, price) {
+function clearLocalStorage() {
+    window.localStorage.clear();
+}
+
+localButton.addEventListener("click", clearLocalStorage());
+
+function cleanInputs(){
+    price.value = "";
+    name.value = "";
+}
+
+function createItem(name, price, container, array) {
     const li = document.createElement("li");
     li.classList.add("list--item");
+    li.setAttribute("data-index", array.length)
     
     li.innerHTML = `
-        <span>${productList.length}</span>
-        <div class="item--draggable" draggable="true" id="draggable-${productList.length}">
+        <span>${array.length}</span>
+        <div class="item--draggable" draggable="true">
             <p>${name}</p>
             <p>${price}</p>
             <span>...</span>
         </div>
     `;
 
-    nodesItem.push(li);
-    list.appendChild(li);
-    addEvents(li, productList.length);
+    array.push(li);
+    container.appendChild(li);
+    addEvents(li);
 }
 
 function dragStart() {
-    console.log("Start");
+    startPosition = Number(this.closest("li").getAttribute("data-index"));
 }
-
-function dragOver() {
-    /* console.log("Over"); */
-
+  
+function dragOver(event) {
+    event.preventDefault();
 }
 
 function dragEnter() {
-    /* console.log("Enter"); */
-
+    this.classList.add("over");
 }
 
 function dragLeave() {
-    /* console.log("Leave"); */
-
+    this.classList.remove("over");
 }
 
 function dragDrop() {
-    /* console.log("Drop"); */
+    finalPosition = Number(this.getAttribute("data-index"));
+    swapItems(startPosition, finalPosition);
+}
 
+function swapItems(initialPosition, finalPosition) {
+    const firstElement =
+    nodesItem[initialPosition].querySelector(".item--draggable");
+    const secondElement =
+      nodesItem[finalPosition].querySelector(".item--draggable");
+  
+    nodesItem[initialPosition].appendChild(secondElement);
+    nodesItem[finalPosition].appendChild(firstElement);
+  
+    if (nodesItem[finalPosition].classList.contains("over")) {
+      nodesItem[finalPosition].classList.remove("over");
+    }
 }
 
 
-function addEvents(node, index) {
-    const draggable = document.querySelector(`#draggable-${index}`);
-    console.log(draggable);
-    node.addEventListener("dragstart", dragStart);
-
-    draggable.addEventListener("drop", dragDrop);
-    draggable.addEventListener("dragover", dragOver);
-    draggable.addEventListener("dragenter", dragEnter);
-    draggable.addEventListener("dragleave", dragLeave);
+function addEvents(node) {
+    const draggable = node.children[1];
+    draggable.addEventListener("dragstart", dragStart);
+  
+    node.addEventListener("drop", dragDrop);
+    node.addEventListener("dragover", dragOver);
+    node.addEventListener("dragenter", dragEnter);
+    node.addEventListener("dragleave", dragLeave);
 }
 
+
+///move this to a new js file
+
+const API = "https://api.escuelajs.co/api/v1/products";
+const onlineButton = document.querySelector("#online-button");
+
+function fetchData(APIWithQuery) {
+  // change to ASYNC AWAIT
+  fetch(APIWithQuery)
+    .then((data) => data.json())
+    .then((products) => {
+      products.map((product) => {
+        createItem(product.title, product.price, onlineList, onlineListArray);
+      });
+    });
+}
+
+fetchData(`${API}?offset=0&limit=10`);
+
+onlineButton.addEventListener("click", () => {
+  fetchData(`${API}?offset=5&limit=15`);
+});

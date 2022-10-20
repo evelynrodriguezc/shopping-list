@@ -10,6 +10,7 @@
 <body>
     <h1>My shopping list</h1>
     <section class="hero">
+        <h2>Local List</h2>
         <ul class="list container" id="list">
         </ul>
         <form class="container" id="form">
@@ -19,6 +20,12 @@
             <input type="text" id="price" placeholder="Search your product price">
             <button type="submit" id="submit-button">Add product</button>
         </form>
+    </section>
+    <button id="local-button" type="button">Clear local list</button>
+    <section class="online-products">
+        <h2>Online List</h2>
+        <ul class="list container" id="online-list"></ul>
+        <button id="online-button" type="button">Get next items</button>
     </section>
 <script src="./src/index.js"></script>
 </body>
